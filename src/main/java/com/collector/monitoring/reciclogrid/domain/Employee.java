@@ -30,7 +30,6 @@ public class Employee {
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_employee"))
     private Company company;

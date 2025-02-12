@@ -35,16 +35,21 @@ public class Collector {
     @JoinTable(name = "employee_collectors",
             joinColumns = @JoinColumn(name = "collector_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "employee_id", nullable = false))
-    private Set<Employee> employees = new HashSet<>();
+    private final Set<Employee> employees = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_collector"))
+    private Company company;
 
     public Collector() {
     }
 
-    public Collector(Long id, String name, Address address, String category) {
+    public Collector(Long id, String name, Address address, String category, Company company) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.category = category;
+        this.company = company;
     }
 
     public Long getId() {
@@ -89,5 +94,13 @@ public class Collector {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

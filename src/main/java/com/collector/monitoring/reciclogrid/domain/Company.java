@@ -38,6 +38,10 @@ public class Company {
     @JsonIgnore
     private Set<Employee> employees = new HashSet<>();
 
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Collector> collectors = new HashSet<>();
+
     public Company() {
     }
 

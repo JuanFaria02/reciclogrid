@@ -58,7 +58,8 @@ public class Employee implements UserDetails, Serializable {
     public Employee() {
     }
 
-    public Employee(Long id, String name, String email, String phone, Company company, UserType type, String documentNumber, boolean active) {
+    public Employee(Long id, String name, String email, String phone, Company company,
+                    UserType type, String documentNumber, boolean active, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -67,6 +68,7 @@ public class Employee implements UserDetails, Serializable {
         this.type = type;
         this.documentNumber = documentNumber;
         this.active = active;
+        this.password = password;
     }
 
     public void copyDto(EmployeeDTO employeeDTO) {

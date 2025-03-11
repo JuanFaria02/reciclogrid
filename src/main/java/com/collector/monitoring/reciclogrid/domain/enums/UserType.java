@@ -2,7 +2,8 @@ package com.collector.monitoring.reciclogrid.domain.enums;
 
 public enum UserType {
     EMPLOYEE("employee"),
-    ADMIN("admin");
+    ADMIN("admin"),
+    SUPERADMIN("superadmin");
 
     private String role;
 

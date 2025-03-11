@@ -2,6 +2,7 @@ package com.collector.monitoring.reciclogrid.service;
 
 import com.collector.monitoring.reciclogrid.domain.Employee;
 import com.collector.monitoring.reciclogrid.domain.dto.EmployeeDTO;
+import com.collector.monitoring.reciclogrid.domain.enums.UserType;
 import com.collector.monitoring.reciclogrid.repository.EmployeeRepository;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
 import com.collector.monitoring.reciclogrid.service.exception.ResourceNotFoundException;
@@ -74,7 +75,7 @@ public class EmployeeService {
         return employeeRepository.findAll()
                 .stream()
                 .filter(Employee::isActive)
-                .map(employee -> new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPassword(), employee.getPhone(), employee.getType(), employee.getDocumentNumber()))
+                .map(employee -> new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber()))
                 .toList();
     }
 
@@ -82,7 +83,7 @@ public class EmployeeService {
         Optional<Employee> obj = employeeRepository.findById(id);
 
         final Employee employee = obj.orElseThrow(()-> new ResourceNotFoundException(id));
-        return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPassword(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+        return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
     }
 
     @Transactional
@@ -92,9 +93,8 @@ public class EmployeeService {
 
             final Employee employee = objEmployee.orElseThrow(() -> new ResourceNotFoundException(id));
 
-//          TODO Resolver validação se é o usuário é superadmin
-            if (employee.getEmail().equals("admin@gmail.com")) {
-                throw new DataIntegrityViolationException("Não é possível deletar o admin");
+            if (employee.getType() == UserType.SUPERADMIN) {
+                throw new DataIntegrityViolationException("Não é possível deletar o superadmin");
             }
             employee.setActive(false);
 
@@ -114,14 +114,29 @@ public class EmployeeService {
             final Optional<Employee> objEmployee = employeeRepository.findById(id);
 
             Employee employee = objEmployee.orElseThrow(() -> new ResourceNotFoundException(id));
-            if (obj.password() != null && !obj.password().isBlank()) {
-                String encryptedPassword = new BCryptPasswordEncoder().encode(obj.password());
-                employee.setPassword(encryptedPassword);
-            }
 
             employee.copyDto(obj);
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPassword(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+            return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+        } catch (RuntimeException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+//    TODO Melhorar alteração de senha para que não seja feito apenas pelo admin
+    public EmployeeDTO changePassword(String newPassword, Long id) {
+        try {
+            final Optional<Employee> objEmployee = employeeRepository.findById(id);
+
+            Employee employee = objEmployee.orElseThrow(() -> new ResourceNotFoundException(id));
+
+            if (newPassword != null && !newPassword.isBlank()) {
+                String encryptedPassword = new BCryptPasswordEncoder().encode(newPassword);
+                employee.setPassword(encryptedPassword);
+            }
+
+            employee = employeeRepository.save(employee);
+            return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

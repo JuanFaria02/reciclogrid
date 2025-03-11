@@ -50,19 +50,18 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping(API_PATH + "/user/register")
+    @PostMapping(API_PATH + "/employee/register")
     public ResponseEntity<EmployeeDTO> register(@RequestBody @Validated RegisterDTO data){
         if (employeeService.findByEmail(data.email()) != null) {
             throw new DatabaseException("email ja cadastrado!");
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-//      TODO Resolver erro ao criar novo employee
-        Employee newEmployee = new Employee(null, data.name(), encryptedPassword, data.email(), data.phone(), data.type(), true, data.documentNumber());
+        Employee newEmployee = new Employee(null, data.name(), data.email(), data.phone(), data.company(), data.type(), data.documentNumber(), true, encryptedPassword);
 
         employeeService.insert(newEmployee);
 
-        final URI uri = ServletUriComponentsBuilder.fromUriString("/api/user/{id}")
+        final URI uri = ServletUriComponentsBuilder.fromUriString("/api/employee/{id}")
                 .buildAndExpand(newEmployee.getId()).toUri();
 
         return ResponseEntity.created(uri).build();

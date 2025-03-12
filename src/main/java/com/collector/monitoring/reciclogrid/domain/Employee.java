@@ -72,7 +72,11 @@ public class Employee implements UserDetails, Serializable {
     }
 
     public void copyDto(EmployeeDTO employeeDTO) {
-
+        this.name = employeeDTO.name();
+        this.email = employeeDTO.email();
+        this.phone = employeeDTO.phone();
+        this.type = employeeDTO.type();
+        this.documentNumber = employeeDTO.documentNumber();
     }
 
     public Long getId() {
@@ -176,6 +180,10 @@ public class Employee implements UserDetails, Serializable {
 
     public UserType getType() {
         return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     public void setPassword(String password) {

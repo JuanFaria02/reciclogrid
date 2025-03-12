@@ -23,7 +23,13 @@ public class EmployeeService {
 
     public Employee findByEmail(String email) {
         try {
-            return employeeRepository.findByEmail(email);
+            final Employee employee = employeeRepository.findByEmail(email);
+
+            if (employee == null) {
+                throw new ResourceNotFoundException(email);
+            }
+
+            return employee;
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("User with email " + email + " not found");
         }

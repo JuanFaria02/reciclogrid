@@ -1,5 +1,6 @@
 package com.collector.monitoring.reciclogrid.domain;
 
+import com.collector.monitoring.reciclogrid.domain.dto.EmployeeDTO;
 import com.collector.monitoring.reciclogrid.domain.enums.UserType;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
@@ -57,7 +58,8 @@ public class Employee implements UserDetails, Serializable {
     public Employee() {
     }
 
-    public Employee(Long id, String name, String email, String phone, Company company, UserType type, String documentNumber, boolean active) {
+    public Employee(Long id, String name, String email, String phone, Company company,
+                    UserType type, String documentNumber, boolean active, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -66,6 +68,11 @@ public class Employee implements UserDetails, Serializable {
         this.type = type;
         this.documentNumber = documentNumber;
         this.active = active;
+        this.password = password;
+    }
+
+    public void copyDto(EmployeeDTO employeeDTO) {
+
     }
 
     public Long getId() {
@@ -86,6 +93,14 @@ public class Employee implements UserDetails, Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDocumentNumber() {
+        return documentNumber;
+    }
+
+    public void setDocumentNumber(String documentNumber) {
+        this.documentNumber = documentNumber;
     }
 
     public String getPhone() {
@@ -157,5 +172,13 @@ public class Employee implements UserDetails, Serializable {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

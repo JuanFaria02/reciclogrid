@@ -1,5 +1,6 @@
 package com.collector.monitoring.reciclogrid.domain;
 
+import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
@@ -50,6 +51,12 @@ public class Collector {
         this.address = address;
         this.category = category;
         this.company = company;
+    }
+
+    public void copyDto(CollectorDTO collector) {
+        this.address = collector.address();
+        this.category = collector.category();
+        this.name = collector.name();
     }
 
     public Long getId() {

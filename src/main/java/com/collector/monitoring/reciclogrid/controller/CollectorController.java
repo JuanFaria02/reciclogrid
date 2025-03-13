@@ -4,9 +4,7 @@ import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import com.collector.monitoring.reciclogrid.service.CollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,4 +23,11 @@ public class CollectorController {
         return ResponseEntity.ok()
                 .body(collectorDTOS);
     }
+
+    @PutMapping("/collector/{id}")
+    public ResponseEntity<CollectorDTO> update(@RequestBody CollectorDTO obj, @PathVariable Long id) {
+        final CollectorDTO collectorDTO = collectorService.update(obj, id);
+        return ResponseEntity.ok().body(collectorDTO);
+    }
+
 }

@@ -13,7 +13,6 @@ import static com.collector.monitoring.reciclogrid.utils.Constants.API_PATH;
 @RestController
 @RequestMapping(API_PATH)
 public class CollectorController {
-
     @Autowired
     private CollectorService collectorService;
 
@@ -28,6 +27,15 @@ public class CollectorController {
     public ResponseEntity<CollectorDTO> update(@RequestBody CollectorDTO obj, @PathVariable Long id) {
         final CollectorDTO collectorDTO = collectorService.update(obj, id);
         return ResponseEntity.ok().body(collectorDTO);
+    }
+
+//    TODO Insert
+//    TODO FindById
+
+    @PostMapping("/collector/change-status/{id}")
+    public ResponseEntity<Void> changeStatus(@PathVariable Long id) {
+        collectorService.changeStatus(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

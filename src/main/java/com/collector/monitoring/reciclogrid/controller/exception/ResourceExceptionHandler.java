@@ -1,5 +1,6 @@
 package com.collector.monitoring.reciclogrid.controller.exception;
 
+import com.collector.monitoring.reciclogrid.service.exception.AccessDeniedException;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
 import com.collector.monitoring.reciclogrid.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,5 +35,20 @@ public class ResourceExceptionHandler {
         );
         return ResponseEntity.status(status).body(err);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<StandardError> accessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+        String error = "Access Denied exception occurred";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(
+                Instant.now(),
+                status.value(),
+                error,
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(err);
+    }
+
 
 }

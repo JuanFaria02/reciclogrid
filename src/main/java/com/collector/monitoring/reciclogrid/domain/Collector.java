@@ -110,4 +110,8 @@ public class Collector {
     public void setCompany(Company company) {
         this.company = company;
     }
+
+    public void changeStatus() {
+        this.active = !active;
+    }
 }

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
@@ -98,7 +97,7 @@ class EmployeeServiceTest {
 
     @Test
     void shouldUpdateEmployee() {
-        EmployeeDTO dto = new EmployeeDTO("Updated Name", "updated@example.com", "987654321", UserType.ADMIN, "12345678900");
+        EmployeeDTO dto = new EmployeeDTO(null, "Updated Name", "updated@example.com", "987654321", UserType.ADMIN, "12345678900");
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
 

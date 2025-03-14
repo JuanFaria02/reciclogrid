@@ -41,7 +41,7 @@ public class EmployeeService {
             throw new DatabaseException("Esse usuário já está cadastrado");
         }
 
-        Employee employeeInactive = findUserPresentByDocumentNumberOrEmail(employee.getDocumentNumber(), employee.getEmail());
+        Employee employeeInactive = employeeRepository.findByEmailOrDocumentNumber(employee.getDocumentNumber(), employee.getEmail());
 
         if (employeeInactive != null) {
             employee.setActive(true);
@@ -57,18 +57,6 @@ public class EmployeeService {
         employeeRepository.save(employee);
     }
 
-    public Employee findUserPresentByDocumentNumberOrEmail(String documentNumber, String email) {
-        if (findByEmail(email) != null) {
-            return findByEmail(email);
-        }
-
-        if (findByDocumentNumber(documentNumber) != null) {
-            return findByDocumentNumber(documentNumber);
-        }
-
-        return null;
-    }
-
     public Employee findByDocumentNumber(String documentNumber) {
         try {
             return employeeRepository.findByDocumentNumber(documentNumber);
@@ -81,7 +69,7 @@ public class EmployeeService {
         return employeeRepository.findAll()
                 .stream()
                 .filter(Employee::isActive)
-                .map(employee -> new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber()))
+                .map(employee -> new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber()))
                 .toList();
     }
 
@@ -89,7 +77,7 @@ public class EmployeeService {
         Optional<Employee> obj = employeeRepository.findById(id);
 
         final Employee employee = obj.orElseThrow(()-> new ResourceNotFoundException(id));
-        return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
     }
 
     @Transactional
@@ -123,7 +111,7 @@ public class EmployeeService {
 
             employee.copyDto(obj);
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }
@@ -142,7 +130,7 @@ public class EmployeeService {
             }
 
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

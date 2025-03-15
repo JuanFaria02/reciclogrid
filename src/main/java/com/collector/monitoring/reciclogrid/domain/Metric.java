@@ -59,4 +59,12 @@ public class Metric {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public Sensor getSensor() {
+        return sensor;
+    }
+
+    public void setSensor(Sensor sensor) {
+        this.sensor = sensor;
+    }
 }

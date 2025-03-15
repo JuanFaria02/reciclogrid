@@ -3,7 +3,8 @@ package com.collector.monitoring.reciclogrid.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "address")
+@Table(name = "address",
+        uniqueConstraints = { @UniqueConstraint(columnNames = { "latitude", "longitude" }) })
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +28,12 @@ public class Address {
     @Column(length = 128)
     private String longitude;
 
+    @Column(length = 50)
+    private String cep;
+
     public Address() {}
 
-    public Address(Long id, String street, String city, String uf, String state, String latitude, String longitude) {
+    public Address(Long id, String street, String city, String uf, String state, String latitude, String longitude, String cep) {
         this.id = id;
         this.street = street;
         this.city = city;
@@ -37,6 +41,7 @@ public class Address {
         this.state = state;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.cep = cep;
     }
 
     public Long getId() {
@@ -51,11 +56,11 @@ public class Address {
         this.street = street;
     }
 
-    private String getUf() {
+    public String getUf() {
         return uf;
     }
 
-    private void setUf(String uf) {
+    public void setUf(String uf) {
         this.uf = uf;
     }
 
@@ -89,5 +94,13 @@ public class Address {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 }

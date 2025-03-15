@@ -141,7 +141,7 @@ public class Employee implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.type == UserType.ADMIN) {
+        if (this.type == UserType.ADMIN || this.type == UserType.SUPERADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         }
 

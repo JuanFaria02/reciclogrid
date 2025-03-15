@@ -27,7 +27,7 @@ public class Sensor {
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collector_id", foreignKey = @ForeignKey(name = "collector_fk_sensor"))
     private Collector collector;
 

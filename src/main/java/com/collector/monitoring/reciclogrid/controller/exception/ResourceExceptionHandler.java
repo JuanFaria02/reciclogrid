@@ -2,6 +2,7 @@ package com.collector.monitoring.reciclogrid.controller.exception;
 
 import com.collector.monitoring.reciclogrid.service.exception.AccessDeniedException;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
+import com.collector.monitoring.reciclogrid.service.exception.ReciclogridException;
 import com.collector.monitoring.reciclogrid.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -50,5 +51,18 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(ReciclogridException.class)
+    public ResponseEntity<StandardError> accessDeniedException(ReciclogridException e, HttpServletRequest request) {
+        String error = "Bad request. Contact the responsible";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(
+                Instant.now(),
+                status.value(),
+                error,
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(err);
+    }
 
 }

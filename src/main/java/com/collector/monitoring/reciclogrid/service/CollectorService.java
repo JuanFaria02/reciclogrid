@@ -1,12 +1,12 @@
 package com.collector.monitoring.reciclogrid.service;
 
+import com.collector.monitoring.reciclogrid.domain.Address;
 import com.collector.monitoring.reciclogrid.domain.Collector;
-import com.collector.monitoring.reciclogrid.domain.Sensor;
 import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import com.collector.monitoring.reciclogrid.repository.CollectorRepository;
-import com.collector.monitoring.reciclogrid.repository.SensorRepository;
 import com.collector.monitoring.reciclogrid.service.exception.AccessDeniedException;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
+import com.collector.monitoring.reciclogrid.service.exception.ReciclogridException;
 import com.collector.monitoring.reciclogrid.service.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,54 @@ public class CollectorService {
     @Autowired
     private CollectorRepository collectorRepository;
     @Autowired
-    private SensorRepository sensorRepository;
-    @Autowired
     private AuthorizationService authorizationService;
+    @Autowired
+    private AddressService addressService;
 
     public List<CollectorDTO> findAll() {
         return collectorRepository.findAll()
                 .stream()
                 .filter(collector -> authorizationService.userLoggedIsAdmin() || collector.isActive())
-                .map(collector -> {
-                    final Sensor sensor = sensorRepository.findByCollector(collector);
-                    if (sensor == null) {
-                        throw new ResourceNotFoundException("Sensor não encontrado");
-                    }
-                    return CollectorDTO.buildCollectorDTO(sensor, collector);
-                })
+                .map(CollectorDTO::buildCollectorDTO)
                 .toList();
+    }
+
+    public CollectorDTO findById(Long id) {
+        final Collector collector = collectorRepository.findById(id).orElse(null);
+
+        if (collector == null) {
+            throw new ResourceNotFoundException("Coletor não encontrado");
+        }
+
+        return CollectorDTO.buildCollectorDTO(collector);
+    }
+
+    @Transactional
+    public void insert(CollectorDTO collectorDTO) {
+        if (!authorizationService.userLoggedIsAdmin()) {
+            throw new AccessDeniedException("Acesso negado. Esse usuário não possui permissão para realizar essa ação");
+        }
+
+        try {
+             Address existingAddress = addressService.findByCep(
+                    collectorDTO.address().getCep());
+
+            if (existingAddress == null) {
+                final Address newAddress = collectorDTO.address();
+                existingAddress = addressService.saveAddress(newAddress);
+            }
+
+            final Collector collector = new Collector(
+                    collectorDTO.id(),
+                    collectorDTO.name(),
+                    existingAddress,
+                    collectorDTO.category(),
+                    null);
+
+            collectorRepository.save(collector);
+        } catch (Exception e) {
+            throw new ReciclogridException(e.getMessage());
+        }
     }
 
     @Transactional
@@ -49,7 +81,10 @@ public class CollectorService {
 
             collector.copyDto(obj);
             collector = collectorRepository.save(collector);
-            return CollectorDTO.buildCollectorDTO(sensorRepository.findByCollector(collector), collector);
+
+            return CollectorDTO.buildCollectorDTO(collector);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

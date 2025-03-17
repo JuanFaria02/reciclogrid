@@ -27,6 +27,11 @@ public class TokenService {
         return generateToken(user, expirationDate);
     }
 
+    public String generateSensorToken(String identifierNumberSensor) {
+        Instant expirationDate = Instant.now().plus(30, ChronoUnit.DAYS);
+        return generateToken(identifierNumberSensor, expirationDate);
+    }
+
     public void isTokenValid(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -61,6 +66,20 @@ public class TokenService {
             throw new RuntimeException("Error while generating token", exception);
         }
     }
+
+    private String generateToken(String identifierNumberSensor, Instant expirationDate) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.create()
+                    .withIssuer("auth-api")
+                    .withSubject(identifierNumberSensor)
+                    .withExpiresAt(expirationDate)
+                    .sign(algorithm);
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Error while generating token", exception);
+        }
+    }
+
 
     public String validateToken(String token){
         try {

@@ -1,7 +1,9 @@
 package com.collector.monitoring.reciclogrid.controller;
 
 import com.collector.monitoring.reciclogrid.domain.Employee;
+import com.collector.monitoring.reciclogrid.domain.Sensor;
 import com.collector.monitoring.reciclogrid.domain.dto.*;
+import com.collector.monitoring.reciclogrid.infra.security.SensorAuthenticationToken;
 import com.collector.monitoring.reciclogrid.infra.security.TokenService;
 import com.collector.monitoring.reciclogrid.service.EmployeeService;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +51,15 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("{\"error\": \"Unauthorized\", \"message\": \"" + e.getMessage() + "\"}");
         }
+    }
+
+    @PostMapping("/auth/sensor")
+    public ResponseEntity<SensorTokenDTO> authSensor(@RequestBody SensorDTO sensorDTO) {
+        Authentication authentication = new SensorAuthenticationToken(sensorDTO.identifierNumber(), sensorDTO.name());
+        var authResult = authenticationManager.authenticate(authentication);
+
+        Sensor sensor = (Sensor) authResult.getPrincipal();
+        return ResponseEntity.ok(new SensorTokenDTO(tokenService.generateSensorToken(sensor.getIdentifierNumber())));
     }
 
     @PostMapping(API_PATH + "/employee/register")

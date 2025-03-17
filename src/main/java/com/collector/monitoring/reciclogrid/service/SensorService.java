@@ -15,7 +15,7 @@ public class SensorService {
         final Sensor sensor = sensorRepository.findByIdentifierNumber(identifierNumber);
 
         if (sensor == null) {
-            throw new ResourceNotFoundException("Sensor de identificador " + identifierNumber + " não encontrado");
+            throw new ResourceNotFoundException("O sensor não foi encontrador");
         }
         return sensor;
     }

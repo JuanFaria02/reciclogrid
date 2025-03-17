@@ -1,6 +1,9 @@
 package com.collector.monitoring.reciclogrid.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jdk.jfr.Timestamp;
 
 import java.math.BigDecimal;
@@ -30,10 +33,11 @@ public class Metric {
     public Metric() {
     }
 
-    public Metric(Long id, Integer distance, BigDecimal percentage) {
+    public Metric(Long id, Integer distance, BigDecimal percentage, Sensor sensor) {
         this.id = id;
         this.distance = distance;
         this.percentage = percentage;
+        this.sensor = sensor;
     }
 
     public Long getId() {

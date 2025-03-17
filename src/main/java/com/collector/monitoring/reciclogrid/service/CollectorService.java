@@ -2,6 +2,7 @@ package com.collector.monitoring.reciclogrid.service;
 
 import com.collector.monitoring.reciclogrid.domain.Address;
 import com.collector.monitoring.reciclogrid.domain.Collector;
+import com.collector.monitoring.reciclogrid.domain.Employee;
 import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import com.collector.monitoring.reciclogrid.repository.CollectorRepository;
 import com.collector.monitoring.reciclogrid.service.exception.AccessDeniedException;
@@ -27,18 +28,25 @@ public class CollectorService {
     private AddressService addressService;
 
     public List<CollectorDTO> findAll() {
+        final Employee employee = (Employee) authorizationService.getUserLogged();
         return collectorRepository.findAll()
                 .stream()
                 .filter(collector -> authorizationService.userLoggedIsAdmin() || collector.isActive())
+                .filter(collector -> collector.getEmployees().contains(employee))
                 .map(CollectorDTO::buildCollectorDTO)
                 .toList();
     }
 
     public CollectorDTO findById(Long id) {
         final Collector collector = collectorRepository.findById(id).orElse(null);
+        final Employee employee = (Employee) authorizationService.getUserLogged();
 
         if (collector == null) {
             throw new ResourceNotFoundException("Coletor não encontrado");
+        }
+
+        if (!collector.getEmployees().contains(employee)) {
+            throw new AccessDeniedException("Usuário não possui acesso para este coletor");
         }
 
         return CollectorDTO.buildCollectorDTO(collector);

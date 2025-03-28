@@ -19,6 +19,9 @@ public class Metric {
     @Column(nullable = false)
     private BigDecimal percentage;
 
+    @Column(nullable = false)
+    private BigDecimal weight;
+
     @Column(name = "created_at", nullable = false)
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
@@ -66,5 +69,13 @@ public class Metric {
 
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
     }
 }

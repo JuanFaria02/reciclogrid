@@ -3,20 +3,20 @@ package com.collector.monitoring.reciclogrid.domain.dto;
 import com.collector.monitoring.reciclogrid.domain.Address;
 import com.collector.monitoring.reciclogrid.domain.Collector;
 import com.collector.monitoring.reciclogrid.domain.Metric;
-import com.collector.monitoring.reciclogrid.domain.Sensor;
+import com.collector.monitoring.reciclogrid.domain.Microcontroller;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public record CollectorDTO(Long id, String name, String category, Address address, Integer distance, BigDecimal percentage, BigDecimal weight, boolean active) {
     public static CollectorDTO buildCollectorDTO(Collector collector) {
-        final Sensor sensor = collector.getSensors()
+        final Microcontroller microcontroller = collector.getMicrocontrollers()
                 .stream()
                 .findFirst()
                 .orElse(null);
 
-        final Metric lastMetric = Optional.ofNullable(sensor)
-                .map(Sensor::getMetrics)
+        final Metric lastMetric = Optional.ofNullable(microcontroller)
+                .map(Microcontroller::getMetrics)
                 .flatMap(metrics -> metrics.stream().findFirst())
                 .orElse(null);
 

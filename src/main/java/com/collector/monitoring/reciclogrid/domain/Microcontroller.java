@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "sensor")
-public class Sensor {
+@Table(name = "microcontroller")
+public class Microcontroller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,16 +28,16 @@ public class Sensor {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collector_id", foreignKey = @ForeignKey(name = "collector_fk_sensor"))
+    @JoinColumn(name = "collector_id", foreignKey = @ForeignKey(name = "collector_fk_microcontroller"))
     private Collector collector;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "microcontroller", cascade = CascadeType.ALL)
     private final List<Metric> metrics = new ArrayList<>();
 
-    public Sensor() {
+    public Microcontroller() {
     }
 
-    public Sensor(Long id, String name, String identifierNumber, Collector collector) {
+    public Microcontroller(Long id, String name, String identifierNumber, Collector collector) {
         this.id = id;
         this.name = name;
         this.identifierNumber = identifierNumber;

@@ -31,8 +31,7 @@ public class CollectorService {
         final Employee employee = (Employee) authorizationService.getUserLogged();
         return collectorRepository.findAll()
                 .stream()
-                .filter(collector -> authorizationService.userLoggedIsAdmin() || collector.isActive())
-                .filter(collector -> collector.getEmployees().contains(employee))
+                .filter(collector -> authorizationService.userLoggedIsAdmin() || (collector.isActive() && collector.getEmployees().contains(employee)))
                 .map(CollectorDTO::buildCollectorDTO)
                 .toList();
     }

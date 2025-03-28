@@ -27,8 +27,8 @@ public class Metric {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sensor_id", foreignKey = @ForeignKey(name = "sensor_fk_metric"))
-    private Sensor sensor;
+    @JoinColumn(name = "microcontroller_id", foreignKey = @ForeignKey(name = "microcontroller_fk_metric"))
+    private Microcontroller microcontroller;
 
     public Metric() {
     }
@@ -63,12 +63,12 @@ public class Metric {
         return createdAt;
     }
 
-    public Sensor getSensor() {
-        return sensor;
+    public Microcontroller getMicrocontroller() {
+        return microcontroller;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setMicrocontroller(Microcontroller microcontroller) {
+        this.microcontroller = microcontroller;
     }
 
     public BigDecimal getWeight() {

@@ -45,7 +45,7 @@ public class Collector {
     private Company company;
 
     @OneToMany(mappedBy = "collector", cascade = CascadeType.ALL)
-    private final List<Sensor> sensors = new ArrayList<>();
+    private final List<Microcontroller> microcontrollers = new ArrayList<>();
 
     public Collector() {
     }
@@ -120,7 +120,7 @@ public class Collector {
         this.active = !active;
     }
 
-    public List<Sensor> getSensors() {
-        return sensors;
+    public List<Microcontroller> getMicrocontrollers() {
+        return microcontrollers;
     }
 }

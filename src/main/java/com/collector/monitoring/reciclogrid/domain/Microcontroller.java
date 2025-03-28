@@ -27,7 +27,7 @@ public class Microcontroller {
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collector_id", foreignKey = @ForeignKey(name = "collector_fk_microcontroller"))
     private Collector collector;
 

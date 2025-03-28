@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,8 +42,8 @@ public class Collector {
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_collector"))
     private Company company;
 
-    @OneToMany(mappedBy = "collector", cascade = CascadeType.ALL)
-    private final List<Microcontroller> microcontrollers = new ArrayList<>();
+    @OneToOne(mappedBy = "collector", cascade = CascadeType.ALL)
+    private Microcontroller microcontroller;
 
     public Collector() {
     }
@@ -120,7 +118,11 @@ public class Collector {
         this.active = !active;
     }
 
-    public List<Microcontroller> getMicrocontrollers() {
-        return microcontrollers;
+    public Microcontroller getMicrocontroller() {
+        return microcontroller;
+    }
+
+    public void setMicrocontroller(Microcontroller microcontroller) {
+        this.microcontroller = microcontroller;
     }
 }

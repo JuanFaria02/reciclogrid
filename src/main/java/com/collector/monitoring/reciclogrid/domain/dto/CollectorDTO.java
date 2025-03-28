@@ -10,10 +10,7 @@ import java.util.Optional;
 
 public record CollectorDTO(Long id, String name, String category, Address address, Integer distance, BigDecimal percentage, BigDecimal weight, boolean active) {
     public static CollectorDTO buildCollectorDTO(Collector collector) {
-        final Microcontroller microcontroller = collector.getMicrocontrollers()
-                .stream()
-                .findFirst()
-                .orElse(null);
+        final Microcontroller microcontroller = collector.getMicrocontroller();
 
         final Metric lastMetric = Optional.ofNullable(microcontroller)
                 .map(Microcontroller::getMetrics)

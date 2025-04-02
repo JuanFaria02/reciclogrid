@@ -33,10 +33,11 @@ public class Metric {
     public Metric() {
     }
 
-    public Metric(Long id, Integer distance, BigDecimal percentage) {
+    public Metric(Long id, Integer distance, BigDecimal percentage, Sensor sensor) {
         this.id = id;
         this.distance = distance;
         this.percentage = percentage;
+        this.sensor = sensor;
     }
 
     public Long getId() {

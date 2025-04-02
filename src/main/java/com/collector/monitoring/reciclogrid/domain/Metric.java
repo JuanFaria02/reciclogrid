@@ -33,11 +33,12 @@ public class Metric {
     public Metric() {
     }
 
-    public Metric(Long id, Integer distance, BigDecimal percentage, Sensor sensor) {
+    public Metric(Long id, Integer distance, BigDecimal percentage, BigDecimal weight, Microcontroller microcontroller) {
         this.id = id;
         this.distance = distance;
         this.percentage = percentage;
-        this.sensor = sensor;
+        this.weight = weight;
+        this.microcontroller = microcontroller;
     }
 
     public Long getId() {

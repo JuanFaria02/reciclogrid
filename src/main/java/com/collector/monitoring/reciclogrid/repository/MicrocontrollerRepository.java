@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MicrocontrollerRepository extends JpaRepository<Microcontroller, Long> {
     Microcontroller findByCollector(Collector collector);
+    Microcontroller findByIdentifierNumber(String identifierNumber);
 }

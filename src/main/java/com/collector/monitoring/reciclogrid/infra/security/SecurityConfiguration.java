@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,7 +36,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", HttpMethod.POST.name()).permitAll()
-                        .requestMatchers("/auth/sensor", HttpMethod.POST.name()).permitAll()
+                        .requestMatchers("/auth/microcontroller", HttpMethod.POST.name()).permitAll()
                         .requestMatchers("/refreshToken", HttpMethod.POST.name()).permitAll()
                         .requestMatchers("/api/**").authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -50,9 +49,9 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            SensorAuthenticationProvider sensorAuthenticationProvider,
+            MicrocontrollerAuthenticationProvider microcontrollerAuthenticationProvider,
             UserAuthenticationProvider userAuthenticationProvider) {
-        return new ProviderManager(List.of(sensorAuthenticationProvider, userAuthenticationProvider));
+        return new ProviderManager(List.of(microcontrollerAuthenticationProvider, userAuthenticationProvider));
     }
 
     @Bean

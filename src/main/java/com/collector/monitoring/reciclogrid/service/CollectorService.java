@@ -51,6 +51,15 @@ public class CollectorService {
         return CollectorDTO.buildCollectorDTO(collector);
     }
 
+    public Collector findByCode(String code) {
+        try {
+            return Optional.ofNullable(collectorRepository.findByCode(code))
+                    .orElseThrow(() -> new ResourceNotFoundException("Coletor não existe."));
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
+
     @Transactional
     public void insert(CollectorDTO collectorDTO) {
         if (!authorizationService.userLoggedIsAdmin()) {
@@ -71,7 +80,8 @@ public class CollectorService {
                     collectorDTO.name(),
                     existingAddress,
                     collectorDTO.category(),
-                    null);
+                    null,
+                    collectorDTO.code());
 
             collectorRepository.save(collector);
         } catch (Exception e) {

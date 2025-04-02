@@ -1,4 +1,4 @@
 package com.collector.monitoring.reciclogrid.domain.dto;
 
-public record SensorTokenDTO(String token) {
+public record MicrocontrollerTokenDTO(String token) {
 }

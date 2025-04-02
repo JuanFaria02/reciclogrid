@@ -1,9 +1,9 @@
 package com.collector.monitoring.reciclogrid.controller;
 
 import com.collector.monitoring.reciclogrid.domain.Employee;
-import com.collector.monitoring.reciclogrid.domain.Sensor;
+import com.collector.monitoring.reciclogrid.domain.Microcontroller;
 import com.collector.monitoring.reciclogrid.domain.dto.*;
-import com.collector.monitoring.reciclogrid.infra.security.SensorAuthenticationToken;
+import com.collector.monitoring.reciclogrid.infra.security.MicrocontrollerAuthenticationToken;
 import com.collector.monitoring.reciclogrid.infra.security.TokenService;
 import com.collector.monitoring.reciclogrid.service.EmployeeService;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
@@ -53,13 +53,13 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/auth/sensor")
-    public ResponseEntity<SensorTokenDTO> authSensor(@RequestBody SensorDTO sensorDTO) {
-        Authentication authentication = new SensorAuthenticationToken(sensorDTO.identifierNumber(), sensorDTO.name());
+    @PostMapping("/auth/microcontroller")
+    public ResponseEntity<MicrocontrollerTokenDTO> authMicrocontroller(@RequestBody MicrocontrollerDTO microcontrollerDTO) {
+        Authentication authentication = new MicrocontrollerAuthenticationToken(microcontrollerDTO.identifierNumber(), microcontrollerDTO.name());
         var authResult = authenticationManager.authenticate(authentication);
 
-        Sensor sensor = (Sensor) authResult.getPrincipal();
-        return ResponseEntity.ok(new SensorTokenDTO(tokenService.generateSensorToken(sensor.getIdentifierNumber())));
+        Microcontroller microcontroller = (Microcontroller) authResult.getPrincipal();
+        return ResponseEntity.ok(new MicrocontrollerTokenDTO(tokenService.generateMicrocontrollerToken(microcontroller.getIdentifierNumber())));
     }
 
     @PostMapping(API_PATH + "/employee/register")

@@ -8,7 +8,7 @@ import com.collector.monitoring.reciclogrid.domain.Microcontroller;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public record CollectorDTO(Long id, String name, String category, Address address, Integer distance, BigDecimal percentage, BigDecimal weight, boolean active) {
+public record CollectorDTO(Long id, String name, String category, Address address, Integer distance, BigDecimal percentage, BigDecimal weight, boolean active, String code) {
     public static CollectorDTO buildCollectorDTO(Collector collector) {
         final Microcontroller microcontroller = collector.getMicrocontroller();
 
@@ -21,6 +21,6 @@ public record CollectorDTO(Long id, String name, String category, Address addres
         final BigDecimal percentage = lastMetric != null ? lastMetric.getPercentage() : BigDecimal.ZERO;
         final BigDecimal weight = lastMetric != null ? lastMetric.getWeight() : BigDecimal.ZERO;
 
-        return new CollectorDTO(collector.getId(), collector.getName(), collector.getCategory(), collector.getAddress(), distance, percentage, weight, collector.isActive());
+        return new CollectorDTO(collector.getId(), collector.getName(), collector.getCategory(), collector.getAddress(), distance, percentage, weight, collector.isActive(), collector.getCode());
     }
 }

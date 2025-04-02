@@ -24,6 +24,9 @@ public class Collector {
     @Column(nullable = false)
     private boolean active = true;
 
+    @Column(nullable = false, unique = true)
+    private String code;
+
     @Column(name = "created_at", nullable = false)
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
@@ -48,12 +51,13 @@ public class Collector {
     public Collector() {
     }
 
-    public Collector(Long id, String name, Address address, String category, Company company) {
+    public Collector(Long id, String name, Address address, String category, Company company, String code) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.category = category;
         this.company = company;
+        this.code = code;
     }
 
     public void copyDto(CollectorDTO collector) {
@@ -124,5 +128,13 @@ public class Collector {
 
     public void setMicrocontroller(Microcontroller microcontroller) {
         this.microcontroller = microcontroller;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -28,7 +28,7 @@ public class Employee implements UserDetails, Serializable {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String phone;
 
     @Column(nullable = false, name = "type")

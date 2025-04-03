@@ -1,1 +1,0 @@
-ALTER TABLE employee ADD type VARCHAR(50);

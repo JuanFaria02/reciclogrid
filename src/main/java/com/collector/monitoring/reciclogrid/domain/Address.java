@@ -22,13 +22,13 @@ public class Address {
     @Column(nullable = false, length = 2)
     private String uf;
 
-    @Column(length = 128)
+    @Column(nullable = false, length = 128)
     private String latitude;
 
-    @Column(length = 128)
+    @Column(nullable = false, length = 128)
     private String longitude;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 9)
     private String cep;
 
     public Address() {}

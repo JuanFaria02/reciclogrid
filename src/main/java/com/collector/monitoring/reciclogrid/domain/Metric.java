@@ -19,22 +19,26 @@ public class Metric {
     @Column(nullable = false)
     private BigDecimal percentage;
 
+    @Column(nullable = false)
+    private BigDecimal weight;
+
     @Column(name = "created_at", nullable = false)
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sensor_id", foreignKey = @ForeignKey(name = "sensor_fk_metric"))
-    private Sensor sensor;
+    @JoinColumn(name = "microcontroller_id", foreignKey = @ForeignKey(name = "microcontroller_fk_metric"))
+    private Microcontroller microcontroller;
 
     public Metric() {
     }
 
-    public Metric(Long id, Integer distance, BigDecimal percentage, Sensor sensor) {
+    public Metric(Long id, Integer distance, BigDecimal percentage, BigDecimal weight, Microcontroller microcontroller) {
         this.id = id;
         this.distance = distance;
         this.percentage = percentage;
-        this.sensor = sensor;
+        this.weight = weight;
+        this.microcontroller = microcontroller;
     }
 
     public Long getId() {
@@ -61,11 +65,19 @@ public class Metric {
         return createdAt;
     }
 
-    public Sensor getSensor() {
-        return sensor;
+    public Microcontroller getMicrocontroller() {
+        return microcontroller;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setMicrocontroller(Microcontroller microcontroller) {
+        this.microcontroller = microcontroller;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
     }
 }

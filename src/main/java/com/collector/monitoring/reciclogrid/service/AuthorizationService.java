@@ -1,6 +1,8 @@
 package com.collector.monitoring.reciclogrid.service;
 
+import com.collector.monitoring.reciclogrid.domain.Microcontroller;
 import com.collector.monitoring.reciclogrid.repository.EmployeeRepository;
+import com.collector.monitoring.reciclogrid.repository.MicrocontrollerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +15,16 @@ public class AuthorizationService implements UserDetailsService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private MicrocontrollerRepository microcontrollerRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return employeeRepository.findByEmail(email);
+    }
+
+    public Microcontroller loadUserByNameMicrocontroller(String name) {
+        return microcontrollerRepository.findByName(name);
     }
 
     public UserDetails getUserLogged() {

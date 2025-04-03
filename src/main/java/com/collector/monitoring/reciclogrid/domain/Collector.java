@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,6 +23,9 @@ public class Collector {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private String code;
 
     @Column(name = "created_at", nullable = false)
     @Timestamp
@@ -44,18 +45,19 @@ public class Collector {
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_collector"))
     private Company company;
 
-    @OneToMany(mappedBy = "collector", cascade = CascadeType.ALL)
-    private final List<Sensor> sensors = new ArrayList<>();
+    @OneToOne(mappedBy = "collector", cascade = CascadeType.ALL)
+    private Microcontroller microcontroller;
 
     public Collector() {
     }
 
-    public Collector(Long id, String name, Address address, String category, Company company) {
+    public Collector(Long id, String name, Address address, String category, Company company, String code) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.category = category;
         this.company = company;
+        this.code = code;
     }
 
     public void copyDto(CollectorDTO collector) {
@@ -120,7 +122,19 @@ public class Collector {
         this.active = !active;
     }
 
-    public List<Sensor> getSensors() {
-        return sensors;
+    public Microcontroller getMicrocontroller() {
+        return microcontroller;
+    }
+
+    public void setMicrocontroller(Microcontroller microcontroller) {
+        this.microcontroller = microcontroller;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -5,22 +5,22 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class SensorAuthenticationToken extends AbstractAuthenticationToken {
+public class MicrocontrollerAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private final String credentials;
 
-    public SensorAuthenticationToken(Object principal, String credentials) {
+    public MicrocontrollerAuthenticationToken(Object principal, String credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
     }
 
-    public SensorAuthenticationToken(Object principal, String credentials, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
+    public MicrocontrollerAuthenticationToken(Object principal, String credentials, boolean authenticated) {
+        super(null);
         this.principal = principal;
         this.credentials = credentials;
-        setAuthenticated(true);
+        setAuthenticated(authenticated);
     }
 
     @Override

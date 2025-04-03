@@ -2,5 +2,5 @@ package com.collector.monitoring.reciclogrid.domain.dto;
 
 import java.math.BigDecimal;
 
-public record MetricDTO(String identifierNumberSensor, Integer distance, BigDecimal percentage) {
+public record MetricDTO(String collectorCode, Integer distance, BigDecimal percentage, BigDecimal weight) {
 }

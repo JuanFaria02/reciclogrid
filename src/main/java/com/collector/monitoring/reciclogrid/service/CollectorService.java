@@ -31,8 +31,7 @@ public class CollectorService {
         final Employee employee = (Employee) authorizationService.getUserLogged();
         return collectorRepository.findAll()
                 .stream()
-                .filter(collector -> authorizationService.userLoggedIsAdmin() || collector.isActive())
-                .filter(collector -> collector.getEmployees().contains(employee))
+                .filter(collector -> authorizationService.userLoggedIsAdmin() || (collector.isActive() && collector.getEmployees().contains(employee)))
                 .map(CollectorDTO::buildCollectorDTO)
                 .toList();
     }
@@ -50,6 +49,15 @@ public class CollectorService {
         }
 
         return CollectorDTO.buildCollectorDTO(collector);
+    }
+
+    public Collector findByCode(String code) {
+        try {
+            return Optional.ofNullable(collectorRepository.findByCode(code))
+                    .orElseThrow(() -> new ResourceNotFoundException("Coletor não existe."));
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 
     @Transactional
@@ -72,7 +80,8 @@ public class CollectorService {
                     collectorDTO.name(),
                     existingAddress,
                     collectorDTO.category(),
-                    null);
+                    null,
+                    collectorDTO.code());
 
             collectorRepository.save(collector);
         } catch (Exception e) {

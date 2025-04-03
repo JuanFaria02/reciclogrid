@@ -27,9 +27,9 @@ public class TokenService {
         return generateToken(user, expirationDate);
     }
 
-    public String generateMicrocontrollerToken(String identifierNumberMicrocontroller) {
+    public String generateMicrocontrollerToken(String nameMicrocontroller) {
         Instant expirationDate = Instant.now().plus(30, ChronoUnit.DAYS);
-        return generateToken(identifierNumberMicrocontroller, expirationDate);
+        return generateToken(nameMicrocontroller, expirationDate);
     }
 
     public void isTokenValid(String token) {
@@ -67,12 +67,12 @@ public class TokenService {
         }
     }
 
-    private String generateToken(String identifierNumberMicrocontroller, Instant expirationDate) {
+    private String generateToken(String nameMicrocontroller, Instant expirationDate) {
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("auth-api")
-                    .withSubject(identifierNumberMicrocontroller)
+                    .withSubject(nameMicrocontroller)
                     .withExpiresAt(expirationDate)
                     .sign(algorithm);
         } catch (JWTCreationException exception) {

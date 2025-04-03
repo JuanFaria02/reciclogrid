@@ -55,11 +55,11 @@ public class AuthenticationController {
 
     @PostMapping("/auth/microcontroller")
     public ResponseEntity<MicrocontrollerTokenDTO> authMicrocontroller(@RequestBody MicrocontrollerDTO microcontrollerDTO) {
-        Authentication authentication = new MicrocontrollerAuthenticationToken(microcontrollerDTO.identifierNumber(), microcontrollerDTO.name());
+        Authentication authentication = new MicrocontrollerAuthenticationToken(microcontrollerDTO.name(), microcontrollerDTO.identifierNumber());
         var authResult = authenticationManager.authenticate(authentication);
 
         Microcontroller microcontroller = (Microcontroller) authResult.getPrincipal();
-        return ResponseEntity.ok(new MicrocontrollerTokenDTO(tokenService.generateMicrocontrollerToken(microcontroller.getIdentifierNumber())));
+        return ResponseEntity.ok(new MicrocontrollerTokenDTO(tokenService.generateMicrocontrollerToken(microcontroller.getName())));
     }
 
     @PostMapping(API_PATH + "/employee/register")

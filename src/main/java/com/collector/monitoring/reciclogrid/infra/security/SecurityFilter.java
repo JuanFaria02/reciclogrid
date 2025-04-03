@@ -1,5 +1,6 @@
 package com.collector.monitoring.reciclogrid.infra.security;
 
+import com.collector.monitoring.reciclogrid.domain.Microcontroller;
 import com.collector.monitoring.reciclogrid.infra.security.exception.TokenException;
 import com.collector.monitoring.reciclogrid.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
@@ -33,11 +34,20 @@ public class SecurityFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                     return;
                 }
-                var email = tokenService.validateToken(token);
-                UserDetails user = authorizationService.loadUserByUsername(email);
 
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (request.getServletPath().equals("/api/metrics/insert")) {
+                    var nameMicrocontroller = tokenService.validateToken(token);
+                    Microcontroller microcontroller = authorizationService.loadUserByNameMicrocontroller(nameMicrocontroller);
+
+                    var authentication = new MicrocontrollerAuthenticationToken(microcontroller, null, true);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    var email = tokenService.validateToken(token);
+                    UserDetails user = authorizationService.loadUserByUsername(email);
+
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             } catch (TokenException e) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");

@@ -24,7 +24,7 @@ public class Collector {
     @Column(nullable = false)
     private boolean active = true;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private String code;
 
     @Column(name = "created_at", nullable = false)

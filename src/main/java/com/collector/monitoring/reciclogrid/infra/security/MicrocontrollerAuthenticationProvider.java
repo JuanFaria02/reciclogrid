@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -16,18 +17,25 @@ public class MicrocontrollerAuthenticationProvider implements AuthenticationProv
     @Autowired
     private MicrocontrollerRepository microcontrollerRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String identifierNumber = authentication.getName();
-        String name = authentication.getCredentials().toString();
+        String name = authentication.getName();
+        String identifierNumber = authentication.getCredentials().toString();
 
-        Microcontroller microcontroller = Optional.ofNullable(microcontrollerRepository.findByIdentifierNumber(identifierNumber))
+        Microcontroller microcontroller = Optional.ofNullable(microcontrollerRepository.findByName(name))
                 .orElseThrow(() -> new BadCredentialsException("Microcontrolador não encontrado"));
 
         if (!microcontroller.getName().equals(name)) {
             throw new BadCredentialsException("Nome do Microcontrolador inválido");
         }
-        return new MicrocontrollerAuthenticationToken(microcontroller, identifierNumber, null);
+
+        if (!passwordEncoder.matches(identifierNumber, microcontroller.getIdentifierNumber())) {
+            throw new BadCredentialsException("Identificador único inválido");
+        }
+        return new MicrocontrollerAuthenticationToken(microcontroller, identifierNumber, true);
     }
 
     @Override

@@ -16,11 +16,11 @@ public class MicrocontrollerAuthenticationToken extends AbstractAuthenticationTo
         setAuthenticated(false);
     }
 
-    public MicrocontrollerAuthenticationToken(Object principal, String credentials, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
+    public MicrocontrollerAuthenticationToken(Object principal, String credentials, boolean authenticated) {
+        super(null);
         this.principal = principal;
         this.credentials = credentials;
-        setAuthenticated(true);
+        setAuthenticated(authenticated);
     }
 
     @Override

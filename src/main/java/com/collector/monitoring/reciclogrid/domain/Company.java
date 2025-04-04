@@ -19,11 +19,11 @@ public class Company implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String code;
-
-    @Column(nullable = false)
+    @Column(name = "corporate_name", nullable = false)
     private String corporateName;
+
+    @Column(name = "document_number", nullable = false)
+    private String documentNumber;
 
     @Column(nullable = false)
     private String email;
@@ -46,12 +46,12 @@ public class Company implements Serializable {
     public Company() {
     }
 
-    public Company(Long id, String name, String corporateName, String email, String code) {
+    public Company(Long id, String name, String corporateName, String email, String documentNumber) {
         this.id = id;
         this.name = name;
         this.corporateName = corporateName;
         this.email = email;
-        this.code = code;
+        this.documentNumber = documentNumber;
     }
 
     public Long getId() {
@@ -64,14 +64,6 @@ public class Company implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getCorporateName() {
@@ -96,6 +88,14 @@ public class Company implements Serializable {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getDocumentNumber() {
+        return documentNumber;
+    }
+
+    public void setDocumentNumber(String documentNumber) {
+        this.documentNumber = documentNumber;
     }
 
     public boolean isActive() {

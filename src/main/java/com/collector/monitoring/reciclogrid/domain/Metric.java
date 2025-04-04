@@ -3,12 +3,13 @@ package com.collector.monitoring.reciclogrid.domain;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "metric")
-public class Metric {
+public class Metric implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

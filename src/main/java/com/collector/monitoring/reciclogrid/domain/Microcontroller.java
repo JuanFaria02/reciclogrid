@@ -3,13 +3,14 @@ package com.collector.monitoring.reciclogrid.domain;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "microcontroller")
-public class Microcontroller {
+public class Microcontroller implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

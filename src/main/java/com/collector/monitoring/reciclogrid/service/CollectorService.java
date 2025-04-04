@@ -67,6 +67,10 @@ public class CollectorService {
         }
 
         try {
+            if (collectorRepository.findByCode(collectorDTO.code()) != null) {
+                throw new DatabaseException("Código do coletor já cadastrado!");
+            }
+
              Address existingAddress = addressService.findByCep(
                     collectorDTO.address().getCep());
 

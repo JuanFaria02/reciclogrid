@@ -5,6 +5,7 @@ import com.collector.monitoring.reciclogrid.domain.dto.EmployeeDTO;
 import com.collector.monitoring.reciclogrid.domain.enums.UserType;
 import com.collector.monitoring.reciclogrid.repository.EmployeeRepository;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
+import com.collector.monitoring.reciclogrid.service.exception.ReciclogridException;
 import com.collector.monitoring.reciclogrid.service.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class EmployeeService {
 
             return employee;
         } catch (ResourceNotFoundException e) {
-            throw new ResourceNotFoundException("User with email " + email + " not found");
+            throw new ResourceNotFoundException("Usuário com o email " + email + " não encontrado");
         }
     }
 
@@ -54,22 +55,23 @@ public class EmployeeService {
             return;
         }
 
-        employeeRepository.save(employee);
-    }
-
-    public Employee findByDocumentNumber(String documentNumber) {
-        try {
-            return employeeRepository.findByDocumentNumber(documentNumber);
-        } catch (ResourceNotFoundException e) {
-            throw new ResourceNotFoundException("User with email " + documentNumber + " not found");
+        final boolean employeeHasDocumentNumber = employee.getDocumentNumber().isBlank() || employee.getDocumentNumber() == null;
+        if (employee.getType() == UserType.EMPLOYEE && !employeeHasDocumentNumber) {
+            throw new ReciclogridException("O número do documento de um funcionário não pode ser nulo.");
         }
+        employeeRepository.save(employee);
     }
 
     public List<EmployeeDTO> findAll() {
         return employeeRepository.findAll()
                 .stream()
                 .filter(Employee::isActive)
-                .map(employee -> new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber()))
+                .map(employee -> new EmployeeDTO(employee.getId(),
+                        employee.getName(),
+                        employee.getEmail(),
+                        employee.getPhone(),
+                        employee.getType(),
+                        employee.getDocumentNumber()))
                 .toList();
     }
 
@@ -117,7 +119,6 @@ public class EmployeeService {
         }
     }
 
-//    TODO Melhorar alteração de senha para que não seja feito apenas pelo admin
     public EmployeeDTO changePassword(String newPassword, Long id) {
         try {
             final Optional<Employee> objEmployee = employeeRepository.findById(id);

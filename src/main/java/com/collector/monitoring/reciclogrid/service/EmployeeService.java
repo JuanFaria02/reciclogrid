@@ -44,11 +44,10 @@ public class EmployeeService {
         Employee employeeInactive = employeeRepository.findByEmailOrDocumentNumber(employee.getDocumentNumber(), employee.getEmail());
 
         if (employeeInactive != null) {
-            employee.setActive(true);
-
             if (!employee.isActive()) {
                 throw new DatabaseException("Esse usuário já está cadastrado");
             }
+            employee.setActive(true);
 
             employeeRepository.save(employeeInactive);
             return;

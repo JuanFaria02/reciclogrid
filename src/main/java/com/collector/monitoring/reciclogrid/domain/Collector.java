@@ -4,13 +4,14 @@ import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "collector")
-public class Collector {
+public class Collector implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

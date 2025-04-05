@@ -20,6 +20,19 @@ public class MetricService {
 
     @Transactional
     public void insert(MetricDTO metricDTO) {
+        valiateMetrics(metricDTO);
+        final Microcontroller microcontroller = microcontrollerService.findByCollector(metricDTO.collectorCode());
+
+        Metric metric = new Metric(null,
+                metricDTO.distance(),
+                metricDTO.percentage(),
+                metricDTO.weight(),
+                microcontroller);
+
+        metricRepository.save(metric);
+    }
+
+    private void valiateMetrics(MetricDTO metricDTO) {
         if (metricDTO.collectorCode() == null) {
             throw new ReciclogridException("Identificador do microcontrolador não pode ser nulo");
         }
@@ -39,10 +52,5 @@ public class MetricService {
         if (metricDTO.weight().compareTo(BigDecimal.ZERO) < 0) {
             throw new ReciclogridException("O peso registrado possui inconsistência. Peso enviado foi igual a " + metricDTO.percentage());
         }
-
-        final Microcontroller microcontroller = microcontrollerService.findByCollector(metricDTO.collectorCode());
-        Metric metric = new Metric(null, metricDTO.distance(), metricDTO.percentage(), metricDTO.weight(), microcontroller);
-
-        metricRepository.save(metric);
     }
 }

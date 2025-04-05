@@ -2,10 +2,12 @@ package com.collector.monitoring.reciclogrid.domain;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "address",
         uniqueConstraints = { @UniqueConstraint(columnNames = { "latitude", "longitude" }) })
-public class Address {
+public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

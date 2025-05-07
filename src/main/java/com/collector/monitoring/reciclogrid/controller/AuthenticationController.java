@@ -41,7 +41,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(REFRESH_TOKEN_PATH)
-    public ResponseEntity<?> authRefreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO, @RequestHeader String authorization) {
+    public ResponseEntity<?> authRefreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO) {
         try {
             String email = tokenService.validateToken(refreshTokenDTO.refreshToken());
 

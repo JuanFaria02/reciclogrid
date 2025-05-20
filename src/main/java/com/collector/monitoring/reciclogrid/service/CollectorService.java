@@ -13,9 +13,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +28,14 @@ public class CollectorService {
     @Autowired
     private AddressService addressService;
 
-    public List<CollectorDTO> findAll() {
-        final Employee employee = (Employee) authorizationService.getUserLogged();
-        return collectorRepository.findAll()
-                .stream()
-                .filter(collector -> authorizationService.userLoggedIsAdmin() || (collector.isActive() && collector.getEmployees().contains(employee)))
-                .map(CollectorDTO::buildCollectorDTO)
-                .toList();
+    public Page<CollectorDTO> findAll(Pageable pageable) {
+        Employee employee = (Employee) authorizationService.getUserLogged();
+
+        Page<Collector> page = authorizationService.userLoggedIsAdmin()
+                ? collectorRepository.findAll(pageable)
+                : collectorRepository.findByActiveTrueAndEmployeesContains(employee, pageable);
+
+        return page.map(CollectorDTO::buildCollectorDTO);
     }
 
     public CollectorDTO findById(Long id) {

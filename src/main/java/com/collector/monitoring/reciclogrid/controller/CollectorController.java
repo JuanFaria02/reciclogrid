@@ -3,12 +3,15 @@ package com.collector.monitoring.reciclogrid.controller;
 import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import com.collector.monitoring.reciclogrid.service.CollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 import static com.collector.monitoring.reciclogrid.utils.Constants.API_PATH;
 
@@ -18,12 +21,26 @@ public class CollectorController {
     @Autowired
     private CollectorService collectorService;
 
+
     @GetMapping("/collectors")
-    public ResponseEntity<List<CollectorDTO>> findAll() {
-        final List<CollectorDTO> collectorDTOS = collectorService.findAll();
-        return ResponseEntity.ok()
-                .body(collectorDTOS);
+    public ResponseEntity<Page<CollectorDTO>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort.Order order = new Sort.Order(
+                Sort.Direction.fromString(direction),
+                sort
+        );
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
+
+        Page<CollectorDTO> resultPage = collectorService.findAll(pageable);
+
+        return ResponseEntity.ok(resultPage);
     }
+
 
     @PutMapping("/collector/{id}")
     public ResponseEntity<CollectorDTO> update(@RequestBody CollectorDTO obj, @PathVariable Long id) {

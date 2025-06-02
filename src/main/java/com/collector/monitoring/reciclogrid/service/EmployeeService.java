@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,17 +64,22 @@ public class EmployeeService {
         employeeRepository.save(employee);
     }
 
-    public List<EmployeeDTO> findAll() {
-        return employeeRepository.findAll()
+    public Page<EmployeeDTO> findAll(Pageable pageable) {
+        Page<Employee> employeePage = employeeRepository.findAll(pageable);
+
+        List<EmployeeDTO> dtoList = employeePage.getContent()
                 .stream()
                 .filter(Employee::isActive)
-                .map(employee -> new EmployeeDTO(employee.getId(),
+                .map(employee -> new EmployeeDTO(
+                        employee.getId(),
                         employee.getName(),
                         employee.getEmail(),
                         employee.getPhone(),
                         employee.getType(),
                         employee.getDocumentNumber()))
                 .toList();
+
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
     public EmployeeDTO findById(Long id) {

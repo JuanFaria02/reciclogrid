@@ -3,10 +3,13 @@ package com.collector.monitoring.reciclogrid.controller;
 import com.collector.monitoring.reciclogrid.domain.dto.EmployeeDTO;
 import com.collector.monitoring.reciclogrid.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.collector.monitoring.reciclogrid.utils.Constants.API_PATH;
@@ -17,11 +20,23 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping(value = "/employees")
-    public ResponseEntity<List<EmployeeDTO>> findAll() {
-        final List<EmployeeDTO> employeeDTOS = employeeService.findAll();
-        return ResponseEntity.ok()
-                .body(employeeDTOS);
+    @GetMapping("/employees")
+    public ResponseEntity<Page<EmployeeDTO>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort.Order order = new Sort.Order(
+                Sort.Direction.fromString(direction),
+                sort
+        );
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
+
+        Page<EmployeeDTO> resultPage = employeeService.findAll(pageable);
+
+        return ResponseEntity.ok(resultPage);
     }
 
     @GetMapping(value = "/employee/{id}")

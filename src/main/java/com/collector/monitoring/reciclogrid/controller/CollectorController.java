@@ -21,7 +21,6 @@ public class CollectorController {
     @Autowired
     private CollectorService collectorService;
 
-
     @GetMapping("/collectors")
     public ResponseEntity<Page<CollectorDTO>> findAll(
             @RequestParam(defaultValue = "0") int page,
@@ -40,7 +39,6 @@ public class CollectorController {
 
         return ResponseEntity.ok(resultPage);
     }
-
 
     @PutMapping("/collector/{id}")
     public ResponseEntity<CollectorDTO> update(@RequestBody CollectorDTO obj, @PathVariable Long id) {

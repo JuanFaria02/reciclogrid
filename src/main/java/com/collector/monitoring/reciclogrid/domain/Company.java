@@ -37,7 +37,7 @@ public class Company implements Serializable {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Employee> employees = new HashSet<>();
+    private final Set<Employee> employees = new HashSet<>();
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -72,6 +72,10 @@ public class Company implements Serializable {
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
+    }
+
+    public Set<Collector> getCollectors() {
+        return collectors;
     }
 
     public String getEmail() {

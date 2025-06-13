@@ -6,8 +6,6 @@ import jdk.jfr.Timestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "collector")
@@ -35,12 +33,6 @@ public class Collector implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "address_fk_collector"))
     private Address address;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "employee_collectors",
-            joinColumns = @JoinColumn(name = "collector_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "employee_id", nullable = false))
-    private final Set<Employee> employees = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_collector"))
@@ -93,10 +85,6 @@ public class Collector implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public Set<Employee> getEmployees() {
-        return employees;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -47,14 +47,6 @@ CREATE TABLE collector (
     CONSTRAINT address_fk_collector FOREIGN KEY (address_id) REFERENCES address(id)
 );
 
-CREATE TABLE employee_collectors (
-    collector_id BIGINT NOT NULL,
-    employee_id BIGINT NOT NULL,
-    PRIMARY KEY (collector_id, employee_id),
-    FOREIGN KEY (collector_id) REFERENCES collector(id) ON DELETE CASCADE,
-    FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE
-);
-
 CREATE TABLE microcontroller (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

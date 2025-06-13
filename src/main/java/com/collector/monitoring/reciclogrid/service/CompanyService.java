@@ -15,6 +15,10 @@ public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
 
+    public Company findByDocumentNumber(String documentNumber) {
+        return companyRepository.findByDocumentNumber(documentNumber);
+    }
+
     @Transactional
     public void insert(Company company) {
         if (company.getId() != null) {

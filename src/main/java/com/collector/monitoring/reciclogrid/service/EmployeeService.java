@@ -1,6 +1,8 @@
 package com.collector.monitoring.reciclogrid.service;
 
+import com.collector.monitoring.reciclogrid.domain.Company;
 import com.collector.monitoring.reciclogrid.domain.Employee;
+import com.collector.monitoring.reciclogrid.domain.dto.CompanyDTO;
 import com.collector.monitoring.reciclogrid.domain.dto.EmployeeDTO;
 import com.collector.monitoring.reciclogrid.domain.enums.UserType;
 import com.collector.monitoring.reciclogrid.repository.EmployeeRepository;
@@ -24,16 +26,12 @@ import java.util.Optional;
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private CompanyService companyService;
 
     public Employee findByEmail(String email) {
         try {
-            final Employee employee = employeeRepository.findByEmail(email);
-
-            if (employee == null) {
-                throw new ResourceNotFoundException(email);
-            }
-
-            return employee;
+            return employeeRepository.findByEmail(email);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Usuário com o email " + email + " não encontrado");
         }
@@ -76,7 +74,8 @@ public class EmployeeService {
                         employee.getEmail(),
                         employee.getPhone(),
                         employee.getType(),
-                        employee.getDocumentNumber()))
+                        employee.getDocumentNumber(),
+                        employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null))
                 .toList();
 
         return new PageImpl<>(dtoList, pageable, dtoList.size());
@@ -86,7 +85,8 @@ public class EmployeeService {
         Optional<Employee> obj = employeeRepository.findById(id);
 
         final Employee employee = obj.orElseThrow(()-> new ResourceNotFoundException(id));
-        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+        final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
+        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), companyDTO);
     }
 
     @Transactional
@@ -118,9 +118,14 @@ public class EmployeeService {
 
             Employee employee = objEmployee.orElseThrow(() -> new ResourceNotFoundException(id));
 
+            if (obj.company() != null) {
+                Company company = companyService.findByDocumentNumber(obj.company().documentNumber());
+                employee.setCompany(company);
+            }
             employee.copyDto(obj);
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+            final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), companyDTO);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }
@@ -138,7 +143,7 @@ public class EmployeeService {
             }
 
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber());
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), null);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

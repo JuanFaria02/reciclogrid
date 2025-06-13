@@ -4,6 +4,7 @@ import com.collector.monitoring.reciclogrid.domain.Address;
 import com.collector.monitoring.reciclogrid.domain.Collector;
 import com.collector.monitoring.reciclogrid.domain.Employee;
 import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
+import com.collector.monitoring.reciclogrid.domain.enums.UserType;
 import com.collector.monitoring.reciclogrid.repository.CollectorRepository;
 import com.collector.monitoring.reciclogrid.service.exception.AccessDeniedException;
 import com.collector.monitoring.reciclogrid.service.exception.DatabaseException;
@@ -46,7 +47,7 @@ public class CollectorService {
             throw new ResourceNotFoundException("Coletor não encontrado");
         }
 
-        if (!collector.getEmployees().contains(employee)) {
+        if (employee.getType() == UserType.EMPLOYEE && !employee.getCompany().getCollectors().contains(collector)) {
             throw new AccessDeniedException("Usuário não possui acesso para este coletor");
         }
 

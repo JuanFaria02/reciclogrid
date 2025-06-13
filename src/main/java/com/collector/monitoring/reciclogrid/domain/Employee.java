@@ -11,9 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "employee")
@@ -51,9 +49,6 @@ public class Employee implements UserDetails, Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_employee"))
     private Company company;
-
-    @ManyToMany(mappedBy = "employees")
-    private final Set<Collector> collectors = new HashSet<>();
 
     public Employee() {
     }
@@ -121,10 +116,6 @@ public class Employee implements UserDetails, Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
-    }
-
-    public Set<Collector> getCollectors() {
-        return collectors;
     }
 
     public boolean isActive() {

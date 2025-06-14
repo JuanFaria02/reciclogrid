@@ -46,7 +46,7 @@ public class Employee implements UserDetails, Serializable {
     @Timestamp
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_employee"))
     private Company company;
 

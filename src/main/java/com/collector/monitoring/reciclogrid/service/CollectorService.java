@@ -34,7 +34,7 @@ public class CollectorService {
 
         Page<Collector> page = authorizationService.userLoggedIsAdmin()
                 ? collectorRepository.findAll(pageable)
-                : collectorRepository.findByActiveTrueAndEmployeesContains(employee, pageable);
+                : collectorRepository.findByActiveTrueAndCompanyContains(employee.getCompany(), pageable);
 
         return page.map(CollectorDTO::buildCollectorDTO);
     }

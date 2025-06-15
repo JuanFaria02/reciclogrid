@@ -75,6 +75,7 @@ public class EmployeeService {
                         employee.getPhone(),
                         employee.getType(),
                         employee.getDocumentNumber(),
+                        employee.getPosition(),
                         employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null))
                 .toList();
 
@@ -86,7 +87,7 @@ public class EmployeeService {
 
         final Employee employee = obj.orElseThrow(()-> new ResourceNotFoundException(id));
         final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
-        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), companyDTO);
+        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), employee.getPosition(), companyDTO);
     }
 
     @Transactional
@@ -125,7 +126,7 @@ public class EmployeeService {
             employee.copyDto(obj);
             employee = employeeRepository.save(employee);
             final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), companyDTO);
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), employee.getPosition(), companyDTO);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }
@@ -143,7 +144,7 @@ public class EmployeeService {
             }
 
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), null);
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), null, null);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

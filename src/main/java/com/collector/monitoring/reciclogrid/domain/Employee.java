@@ -36,6 +36,9 @@ public class Employee implements UserDetails, Serializable {
     @Column(name = "document_number", unique = true)
     private String documentNumber;
 
+    @Column
+    private String position;
+
     @Column(nullable = false, columnDefinition = "text")
     private String password;
 
@@ -54,7 +57,7 @@ public class Employee implements UserDetails, Serializable {
     }
 
     public Employee(Long id, String name, String email, String phone, Company company,
-                    UserType type, String documentNumber, boolean active, String password) {
+                    UserType type, String documentNumber, String position, boolean active, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -62,6 +65,7 @@ public class Employee implements UserDetails, Serializable {
         this.company = company;
         this.type = type;
         this.documentNumber = documentNumber;
+        this.position = position;
         this.active = active;
         this.password = password;
     }
@@ -124,6 +128,14 @@ public class Employee implements UserDetails, Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public LocalDateTime getCreatedAt() {

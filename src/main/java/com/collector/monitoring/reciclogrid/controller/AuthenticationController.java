@@ -69,7 +69,7 @@ public class AuthenticationController {
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        Employee newEmployee = new Employee(null, data.name(), data.email(), data.phone(), data.company(), data.type(), data.documentNumber(), true, encryptedPassword);
+        Employee newEmployee = new Employee(null, data.name(), data.email(), data.phone(), data.company(), data.type(), data.documentNumber(), data.position(), true, encryptedPassword);
 
         employeeService.insert(newEmployee);
 

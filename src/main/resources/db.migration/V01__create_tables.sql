@@ -29,6 +29,7 @@ CREATE TABLE employee (
     password TEXT NOT NULL,
     document_number VARCHAR(255) UNIQUE.
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    position VARCHAR(255),
     active BOOLEAN DEFAULT TRUE,
     company_id BIGINT,
     CONSTRAINT company_fk_employee FOREIGN KEY (company_id) REFERENCES company(id)

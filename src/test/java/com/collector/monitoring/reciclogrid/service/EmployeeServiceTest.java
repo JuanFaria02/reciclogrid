@@ -91,7 +91,7 @@ class EmployeeServiceTest {
 
     @Test
     void shouldUpdateEmployee() {
-        EmployeeDTO dto = new EmployeeDTO(null, "Updated Name", "updated@example.com", "987654321", UserType.ADMIN, "12345678900", null, null);
+        EmployeeDTO dto = new EmployeeDTO(null, "Updated Name", "updated@example.com", "987654321", UserType.ADMIN, null, "12345678900", null, null);
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
 

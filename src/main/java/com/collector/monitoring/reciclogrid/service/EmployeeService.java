@@ -74,6 +74,7 @@ public class EmployeeService {
                         employee.getEmail(),
                         employee.getPhone(),
                         employee.getType(),
+                        employee.getCompany() != null ? employee.getCompany().getCollectors().size() : null,
                         employee.getDocumentNumber(),
                         employee.getPosition(),
                         employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null))
@@ -86,8 +87,7 @@ public class EmployeeService {
         Optional<Employee> obj = employeeRepository.findById(id);
 
         final Employee employee = obj.orElseThrow(()-> new ResourceNotFoundException(id));
-        final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
-        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), employee.getPosition(), companyDTO);
+        return getEmployeeDTO(employee);
     }
 
     @Transactional
@@ -125,11 +125,16 @@ public class EmployeeService {
             }
             employee.copyDto(obj);
             employee = employeeRepository.save(employee);
-            final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), employee.getPosition(), companyDTO);
+            return getEmployeeDTO(employee);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    private EmployeeDTO getEmployeeDTO(Employee employee) {
+        final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
+        final Integer qtdCollectors = employee.getCompany() != null ? employee.getCompany().getCollectors().size() : null;
+        return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), qtdCollectors, employee.getDocumentNumber(), employee.getPosition(), companyDTO);
     }
 
     public EmployeeDTO changePassword(String newPassword, Long id) {
@@ -144,7 +149,7 @@ public class EmployeeService {
             }
 
             employee = employeeRepository.save(employee);
-            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), employee.getDocumentNumber(), null, null);
+            return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), null, employee.getDocumentNumber(), null, null);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }

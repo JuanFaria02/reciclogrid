@@ -39,7 +39,7 @@ public class Company implements Serializable {
     @JsonIgnore
     private final Set<Employee> employees = new HashSet<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Collector> collectors = new HashSet<>();
 
@@ -109,5 +109,7 @@ public class Company implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+
 }
 

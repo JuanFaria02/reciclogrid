@@ -28,6 +28,10 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private CollectorService collectorService;
+    @Autowired
+    private AuthorizationService authorizationService;
 
     public Employee findByEmail(String email) {
         try {
@@ -55,29 +59,39 @@ public class EmployeeService {
             return;
         }
 
-        final boolean employeeHasDocumentNumber = employee.getDocumentNumber().isBlank() || employee.getDocumentNumber() == null;
+        final boolean employeeHasDocumentNumber = employee.getDocumentNumber() != null || !employee.getDocumentNumber().isBlank();
         if (employee.getType() == UserType.EMPLOYEE && !employeeHasDocumentNumber) {
             throw new ReciclogridException("O número do documento de um funcionário não pode ser nulo.");
         }
+
+        if (employee.getCompany() == null) {
+            throw new ReciclogridException("A empresa do usuário não pode ser nula.");
+        }
+
+        final Company company = companyService.findByDocumentNumber(employee.getCompany().getDocumentNumber());
+        employee.setCompany(company);
+
         employeeRepository.save(employee);
     }
 
     public Page<EmployeeDTO> findAll(Pageable pageable) {
+        Employee employeeLogged = (Employee) authorizationService.getUserLogged();
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
 
         List<EmployeeDTO> dtoList = employeePage.getContent()
                 .stream()
                 .filter(Employee::isActive)
+                .filter(employee -> employeeLogged.getType() == UserType.ADMIN ? employee.getCompany().getDocumentNumber().equals(employeeLogged.getCompany().getDocumentNumber()) : true)
                 .map(employee -> new EmployeeDTO(
                         employee.getId(),
                         employee.getName(),
                         employee.getEmail(),
                         employee.getPhone(),
                         employee.getType(),
-                        employee.getCompany() != null ? employee.getCompany().getCollectors().size() : null,
+                        getQtdCollectors(employee),
                         employee.getDocumentNumber(),
                         employee.getPosition(),
-                        employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null))
+                        employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), employee.getCompany().getCorporateName(), employee.getCompany().getEmail(), employee.getCompany().getDocumentNumber()) : null))
                 .toList();
 
         return new PageImpl<>(dtoList, pageable, dtoList.size());
@@ -132,9 +146,17 @@ public class EmployeeService {
     }
 
     private EmployeeDTO getEmployeeDTO(Employee employee) {
-        final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), null, null, null) : null;
-        final Integer qtdCollectors = employee.getCompany() != null ? employee.getCompany().getCollectors().size() : null;
+        final CompanyDTO companyDTO = employee.getCompany() != null ? new CompanyDTO(employee.getCompany().getName(), employee.getCompany().getCorporateName(), employee.getCompany().getEmail(), employee.getCompany().getDocumentNumber()) : null;
+        final Integer qtdCollectors = getQtdCollectors(employee);
+
         return new EmployeeDTO(employee.getId(), employee.getName(), employee.getEmail(), employee.getPhone(), employee.getType(), qtdCollectors, employee.getDocumentNumber(), employee.getPosition(), companyDTO);
+    }
+
+    private Integer getQtdCollectors(Employee employee) {
+        if (employee.getType() == UserType.SUPERADMIN) {
+            return collectorService.findAll().size();
+        }
+        return employee.getCompany() != null ? employee.getCompany().getCollectors().size() : 0;
     }
 
     public EmployeeDTO changePassword(String newPassword, Long id) {

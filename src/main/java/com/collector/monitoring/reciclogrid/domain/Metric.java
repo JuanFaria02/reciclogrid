@@ -15,9 +15,6 @@ public class Metric implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private Integer distance;
-
-    @Column(nullable = false)
     private BigDecimal percentage;
 
     @Column(nullable = false)
@@ -34,9 +31,8 @@ public class Metric implements Serializable {
     public Metric() {
     }
 
-    public Metric(Long id, Integer distance, BigDecimal percentage, BigDecimal weight, Microcontroller microcontroller) {
+    public Metric(Long id, BigDecimal percentage, BigDecimal weight, Microcontroller microcontroller) {
         this.id = id;
-        this.distance = distance;
         this.percentage = percentage;
         this.weight = weight;
         this.microcontroller = microcontroller;
@@ -44,14 +40,6 @@ public class Metric implements Serializable {
 
     public Long getId() {
         return id;
-    }
-
-    public Integer getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Integer distance) {
-        this.distance = distance;
     }
 
     public BigDecimal getPercentage() {

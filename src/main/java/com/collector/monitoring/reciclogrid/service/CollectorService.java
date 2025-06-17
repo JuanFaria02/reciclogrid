@@ -2,6 +2,7 @@ package com.collector.monitoring.reciclogrid.service;
 
 import com.collector.monitoring.reciclogrid.domain.Address;
 import com.collector.monitoring.reciclogrid.domain.Collector;
+import com.collector.monitoring.reciclogrid.domain.Company;
 import com.collector.monitoring.reciclogrid.domain.Employee;
 import com.collector.monitoring.reciclogrid.domain.dto.CollectorDTO;
 import com.collector.monitoring.reciclogrid.domain.enums.UserType;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,13 +30,19 @@ public class CollectorService {
     private AuthorizationService authorizationService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private CompanyService companyService;
+
+    public List<Collector> findAll() {
+        return collectorRepository.findAll();
+    }
 
     public Page<CollectorDTO> findAll(Pageable pageable) {
         Employee employee = (Employee) authorizationService.getUserLogged();
 
         Page<Collector> page = authorizationService.userLoggedIsAdmin()
                 ? collectorRepository.findAll(pageable)
-                : collectorRepository.findByActiveTrueAndCompanyContains(employee.getCompany(), pageable);
+                : collectorRepository.findByActiveTrueAndCompany_DocumentNumber(employee.getCompany().getDocumentNumber(), pageable);
 
         return page.map(CollectorDTO::buildCollectorDTO);
     }
@@ -47,7 +55,7 @@ public class CollectorService {
             throw new ResourceNotFoundException("Coletor não encontrado");
         }
 
-        if (employee.getType() == UserType.EMPLOYEE && !employee.getCompany().getCollectors().contains(collector)) {
+        if (employee.getType() == UserType.EMPLOYEE && !collector.getCompany().getId().equals(employee.getCompany().getId())) {
             throw new AccessDeniedException("Usuário não possui acesso para este coletor");
         }
 
@@ -102,6 +110,11 @@ public class CollectorService {
             final Optional<Collector> objCollector = collectorRepository.findById(id);
 
             Collector collector = objCollector.orElseThrow(() -> new ResourceNotFoundException(id));
+
+            if (obj.company() != null) {
+                Company company = companyService.findByDocumentNumber(obj.company().documentNumber());
+                collector.setCompany(company);
+            }
 
             collector.copyDto(obj);
             collector = collectorRepository.save(collector);

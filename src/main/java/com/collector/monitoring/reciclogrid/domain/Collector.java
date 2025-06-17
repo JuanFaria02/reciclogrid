@@ -34,7 +34,7 @@ public class Collector implements Serializable {
     @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "address_fk_collector"))
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "company_fk_collector"))
     private Company company;
 

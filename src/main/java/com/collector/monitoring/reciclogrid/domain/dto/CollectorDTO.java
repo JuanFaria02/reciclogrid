@@ -3,6 +3,7 @@ package com.collector.monitoring.reciclogrid.domain.dto;
 import com.collector.monitoring.reciclogrid.domain.*;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Optional;
 
 public record CollectorDTO(Long id, String name, String category, Address address, BigDecimal percentage, BigDecimal weight, boolean active, String code, CompanyDTO company) {
@@ -11,7 +12,7 @@ public record CollectorDTO(Long id, String name, String category, Address addres
 
         final Metric lastMetric = Optional.ofNullable(microcontroller)
                 .map(Microcontroller::getMetrics)
-                .flatMap(metrics -> metrics.stream().findFirst())
+                .flatMap(metrics -> metrics.stream().max(Comparator.comparing(Metric::getCreatedAt)))
                 .orElse(null);
 
         final BigDecimal percentage = lastMetric != null ? lastMetric.getPercentage() : BigDecimal.ZERO;
